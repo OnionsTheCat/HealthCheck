@@ -1,19 +1,18 @@
-﻿$DiskReport = ForEach ($Servernames in ($File))  
- 
-{Get-WmiObject win32_logicaldisk <#-Credential $RunAccount#> ` 
--ComputerName $Servernames -Filter "Drivetype=3" ` 
--ErrorAction SilentlyContinue |  
+﻿$Servernames = $null
+
+$Credentials = Get-Credential
+$File = get-content -path 'servers.txt'
+$DiskReport = ForEach ($Servernames in ($File))  
+
+{Get-WmiObject win32_logicaldisk -Credential $Credentials -ComputerName $Servernames -Filter "Drivetype=3"  
  
 #return only disks with 
 #free space less   
 #than or equal to 0.1 (10%) 
  
-Where-Object {   ($_.freespace/$_.size) -le '1.1'} 
+#Where-Object {   ($_.freespace/$_.size) -le '0.1'} 
  
 }  
- 
- 
-#create reports 
  
 $DiskReport |  
  
@@ -25,4 +24,4 @@ Select-Object @{Label = "Server Name";Expression = {$_.SystemName}},
  
 #Export report to CSV file (Disk Report) 
  
-Export-Csv -path "c:\temp\DiskReport\DiskReport_$logDate.csv" -NoTypeInformation 
+Export-Csv -path "c:\temp\DiskReport\DiskReport_$(get-date -f yyyy-MM-dd).csv" -NoTypeInformation 
