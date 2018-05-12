@@ -1,6 +1,10 @@
-﻿$Servernames = $null
+﻿#-----Set Vars to Null-----#
+$Servernames = $null
 
+#-----Store Creds in a Var-----#
 $Credentials = Get-Credential
+
+#-----Disk Utilization-----#
 $File = get-content -path 'servers.txt'
 $DiskReport = ForEach ($Servernames in ($File))  
 
